@@ -4,16 +4,15 @@ mongoose.connect('mongodb://localhost/fetcher',{ useNewUrlParser: true, useUnifi
 let repoSchema = mongoose.Schema({
   name: String,
   url: String,
-  fork: Number
+  forks: Number
 });
 
 let Repo = mongoose.model('Repo', repoSchema);
 
 let createRepo = (/* TODO */) => {
-  Repo.insertMany()
+  //This isn't needed
 
 }
-
 
 module.exports.createRepo = createRepo;
 module.exports.Repo = Repo;
