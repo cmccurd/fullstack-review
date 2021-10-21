@@ -27,8 +27,12 @@ class App extends React.Component {
       contentTtpe: 'application/json',
       data: {},
       success: (data) => {
+        console.log(data);
+        var lastElement = data.pop();
         this.setState({
-          repos: data
+          repos: data,
+          imported: lastElement.imported,
+          updated: lastElement.updated
         });
       },
     })
@@ -49,7 +53,7 @@ class App extends React.Component {
   render() {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos.slice(0, 25)} />
+      <RepoList repos={this.state.repos.slice(0, 25)} imported={this.state.imported} updated={this.state.updated} />
       <Search onSearch={this.search} />
     </div>)
   }

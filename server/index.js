@@ -7,12 +7,18 @@ let app = express();
 app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
+var updated;
+var imported;
+
 app.post('/repos', function (req, res) {
+  updated = 0;
+  imported = 0;
   getReposByUsername(req.body.name)
     .then((val) => {
       var result = [];
 
       val.data.forEach((repo) => {
+        imported++;
         var t = repo.forks
         var obj = {
           name: repo.name,
@@ -22,6 +28,10 @@ app.post('/repos', function (req, res) {
         Repo.findOneAndDelete({url: obj.url}, (err, data) => {
           if (err) {
             console('err line 24')
+          } else{
+            if (data) {
+              updated++;
+            }
           }
         });
         result.push(obj);
@@ -37,15 +47,10 @@ app.post('/repos', function (req, res) {
 });
 
 app.get('/repos', function (req, res) {
-  // Repo.createIndex({url: 1}, {unique: true});
-  // This route should send back the top 25 repos
+
   Repo.find().sort({'forks': -1})
     .then((val) => {
-      // var topForks;
-      // val.forEach(({fork}) => {
-      //   topForks.push(fork);
-      // });
-      // topForks.sort();
+      val.push({imported: imported - updated, updated: updated})
       res.send(val);
     })
 

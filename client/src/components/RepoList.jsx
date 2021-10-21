@@ -12,7 +12,8 @@ const RepoList = (props) => (
                 </li>);
       })
     }</ul>
-    There are {props.repos.length} repos.
+    Here are the top {props.repos.length} repos.
+    <div>{`${props.imported ? props.imported : 0} new repos imported, ${props.updated ? props.updated : 0} repos updated.`}</div>
   </div>
 )
 
