@@ -12,27 +12,45 @@ class App extends React.Component {
       repos: []
     }
     this.search = this.search.bind(this);
+    this.getRepos = this.getRepos.bind(this);
   }
 
-  componentDidMount()
+  componentDidMount() {
+    this.getRepos();
+  }
 
-  search (term) {
+  getRepos() {
+    $.ajax({
+      type: "get",
+      url: "/repos",
+      dataType: 'json',
+      contentTtpe: 'application/json',
+      data: {},
+      success: (data) => {
+        this.setState({
+          repos: data
+        });
+      },
+    })
+  }
+
+  search(term) {
     $.ajax({
       type: "POST",
       url: '/repos',
-      data: JSON.stringify({name: term}),
+      data: JSON.stringify({ name: term }),
       success: () => {
-        console.log('got there')
+        this.getRepos();
       },
       contentType: 'application/json'
     });
   }
 
-  render () {
+  render() {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
-      <Search onSearch={this.search}/>
+      <RepoList repos={this.state.repos.slice(0, 25)} />
+      <Search onSearch={this.search} />
     </div>)
   }
 }

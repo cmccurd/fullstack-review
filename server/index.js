@@ -8,7 +8,6 @@ app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
-  console.log(req.body.name);
   getReposByUsername(req.body.name)
     .then((val) => {
       var result = [];
@@ -20,6 +19,11 @@ app.post('/repos', function (req, res) {
           url: repo["html_url"],
           forks: t
         };
+        Repo.findOneAndDelete({url: obj.url}, (err, data) => {
+          if (err) {
+            console('err line 24')
+          }
+        });
         result.push(obj);
       });
       Repo.create(result)
@@ -33,9 +37,9 @@ app.post('/repos', function (req, res) {
 });
 
 app.get('/repos', function (req, res) {
-
+  // Repo.createIndex({url: 1}, {unique: true});
   // This route should send back the top 25 repos
-  Repo.find()
+  Repo.find().sort({'forks': -1})
     .then((val) => {
       // var topForks;
       // val.forEach(({fork}) => {
